@@ -1,0 +1,11 @@
+.appShell {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(251, 191, 36, 0.22),
+      transparent 34rem
+    ),
+    linear-gradient(180deg, #fffaf1 0%, #f7f3ea 45%, #efe7d7 100%);
+}

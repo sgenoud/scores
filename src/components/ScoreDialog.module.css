@@ -1,0 +1,239 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0.75rem;
+  background: rgba(23, 25, 35, 0.46);
+  backdrop-filter: blur(10px);
+}
+
+.dialog {
+  width: min(100%, 33rem);
+  max-height: calc(100vh - 1.5rem);
+  max-height: calc(100dvh - 1.5rem);
+  overflow: auto;
+  padding: 1rem 1rem calc(1rem + var(--safe-bottom));
+  border-radius: 1.65rem 1.65rem 1.1rem 1.1rem;
+  background: #fffaf1;
+  box-shadow: 0 2rem 6rem rgba(0, 0, 0, 0.34);
+}
+
+.header {
+  --player-color: #3b82f6;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.avatar {
+  display: grid;
+  width: 3.4rem;
+  height: 3.4rem;
+  place-items: center;
+  border-radius: 1rem;
+  color: white;
+  background: var(--player-color);
+  font-size: 1.35rem;
+  font-weight: 1000;
+  letter-spacing: -0.08em;
+}
+
+.eyebrow {
+  margin: 0 0 0.2rem;
+  color: #7c6f5b;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.header h2 {
+  margin: 0;
+  overflow: hidden;
+  font-size: 1.35rem;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.closeButton {
+  width: 2.65rem;
+  height: 2.65rem;
+  border: 0;
+  border-radius: 50%;
+  color: #171923;
+  background: #f0e7d8;
+  font-size: 1.7rem;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.currentScore {
+  margin: 1rem 0;
+  padding: 0.75rem;
+  border-radius: 1.2rem;
+  color: #171923;
+  background: #f4ead9;
+  font-size: clamp(4rem, 24vw, 7rem);
+  font-variant-numeric: tabular-nums;
+  font-weight: 1000;
+  line-height: 0.9;
+  letter-spacing: -0.1em;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.form {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.valueLabel {
+  display: grid;
+  gap: 0.35rem;
+  color: #6c604f;
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.valueLabel input {
+  width: 100%;
+  border: 0;
+  border-radius: 1.1rem;
+  padding: 0.82rem 1rem;
+  color: #171923;
+  background: #ffffff;
+  box-shadow: inset 0 0 0 1px rgba(23, 25, 35, 0.12);
+  font-size: 1.65rem;
+  font-weight: 900;
+}
+
+.keepOpenToggle {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.25rem 0.15rem;
+  color: #6c604f;
+  font-size: 0.95rem;
+  font-weight: 850;
+}
+
+.keepOpenToggle input {
+  width: 1.25rem;
+  height: 1.25rem;
+  accent-color: #171923;
+}
+
+.formActions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+
+.formActions button,
+.quickGrid button {
+  min-height: 3.25rem;
+  border: 0;
+  border-radius: 1rem;
+  color: #fffaf1;
+  font-weight: 1000;
+  cursor: pointer;
+}
+
+.deleteButton {
+  background: #4b5563;
+}
+
+.addButton {
+  background: #171923;
+}
+
+.quickGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin: 0.75rem 0 1rem;
+}
+
+.quickGrid button {
+  background: #2f3746;
+}
+
+.history {
+  border-top: 1px solid rgba(23, 25, 35, 0.08);
+  padding-top: 0.85rem;
+}
+
+.history h3 {
+  margin: 0 0 0.55rem;
+  color: #6c604f;
+  font-size: 0.84rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.emptyHistory {
+  margin: 0;
+  color: #8b806e;
+  font-weight: 700;
+}
+
+.history ul {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.history li {
+  display: grid;
+  grid-template-columns: minmax(4.5rem, 1fr) auto auto;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.55rem;
+  border-radius: 0.95rem;
+  background: #f6efe2;
+}
+
+.history li span {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 1.12rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 1000;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.positiveEntry {
+  color: #047857;
+}
+
+.negativeEntry {
+  color: #b91c1c;
+}
+
+.history time {
+  color: #7c6f5b;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.history li button {
+  border: 0;
+  border-radius: 999px;
+  padding: 0.5rem 0.75rem;
+  color: #171923;
+  background: #fffaf1;
+  font-weight: 900;
+  cursor: pointer;
+}
