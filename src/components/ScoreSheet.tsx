@@ -136,8 +136,7 @@ const PlayerRow = observer(
 export const ScoreSheet = observer(
   ({ sheet }: { sheet: ScoreSheetInstance }) => {
     const store = useStore();
-    const [wakeLockEnabled, setWakeLockEnabled] = useState(true);
-    const wakeLock = useWakeLock(wakeLockEnabled);
+    useWakeLock(store.settings.wakeLockEnabled);
     const sortLabel =
       sheet.sortDirection === "desc" ? t("highFirst") : t("lowFirst");
 
@@ -187,19 +186,6 @@ export const ScoreSheet = observer(
           ))}
         </div>
 
-        {wakeLock.isSupported ? (
-          <button
-            className={`${styles.bottomToggleButton} ${styles.wakeButton} ${wakeLockEnabled ? styles.wakeButtonActive : ""}`}
-            type="button"
-            onClick={() => setWakeLockEnabled((enabled) => !enabled)}
-            aria-label={
-              wakeLockEnabled ? t("wakeLockDisable") : t("wakeLockEnable")
-            }
-            title={wakeLockEnabled ? t("wakeLockDisable") : t("wakeLockEnable")}
-          >
-            {wakeLockEnabled && wakeLock.isActive ? "◉" : "○"}
-          </button>
-        ) : null}
       </section>
     );
   },

@@ -5,6 +5,7 @@ import { RootStoreInstance, SavedGroupInstance } from "../models/scoreStore";
 import { seedFromText } from "../seed";
 import { RoughAvatar } from "./RoughAvatar";
 import { RoughSeparator } from "./RoughSeparator";
+import { SettingsDialog } from "./SettingsDialog";
 import styles from "./NewSheet.module.css";
 
 const splitNames = (text: string) =>
@@ -49,6 +50,7 @@ const GroupCard = observer(
 export const NewSheet = observer(({ store }: { store: RootStoreInstance }) => {
   const [namesText, setNamesText] = useState("");
   const [showAllGroups, setShowAllGroups] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
   const recentGroups = store.recentGroups;
   const latestGroups = recentGroups.slice(0, 5);
   const recentSheet =
@@ -57,10 +59,15 @@ export const NewSheet = observer(({ store }: { store: RootStoreInstance }) => {
       : null;
 
   useEffect(() => {
-    if (!showAllGroups) return;
-    document.body.classList.add("dialogOpen");
-    return () => document.body.classList.remove("dialogOpen");
-  }, [showAllGroups]);
+    if (showAllGroups || showSettings) {
+      document.body.classList.add("dialogOpen");
+    } else {
+      document.body.classList.remove("dialogOpen");
+    }
+    return () => {
+      document.body.classList.remove("dialogOpen");
+    };
+  }, [showAllGroups, showSettings]);
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
@@ -70,7 +77,17 @@ export const NewSheet = observer(({ store }: { store: RootStoreInstance }) => {
   return (
     <section className={styles.screen}>
       <header className={styles.hero}>
-        <p className={styles.eyebrow}>{t("offlineScorekeeper")}</p>
+        <div className={styles.heroTop}>
+          <p className={styles.eyebrow}>{t("offlineScorekeeper")}</p>
+          <button
+            className={styles.settingsButton}
+            type="button"
+            onClick={() => setShowSettings(true)}
+            aria-label={t("settings")}
+          >
+            ⚙
+          </button>
+        </div>
         <h1>{t("startSheetFast")}</h1>
         <p className={styles.lede}>{t("newSheetLede")}</p>
       </header>
@@ -185,6 +202,13 @@ export const NewSheet = observer(({ store }: { store: RootStoreInstance }) => {
             </div>
           </section>
         </div>
+      ) : null}
+
+      {showSettings ? (
+        <SettingsDialog
+          store={store}
+          onClose={() => setShowSettings(false)}
+        />
       ) : null}
     </section>
   );

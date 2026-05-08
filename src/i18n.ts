@@ -46,6 +46,10 @@ const MESSAGES = {
     add: "Ajouter",
     recentChanges: "Modifications récentes",
     noScoreChanges: "Aucune modification pour le moment.",
+    settings: "Paramètres",
+    language: "Langue",
+    languageAuto: "Auto",
+    closeSettings: "Fermer les paramètres",
     undo: "Annuler",
   },
   en: {
@@ -91,6 +95,10 @@ const MESSAGES = {
     add: "Add",
     recentChanges: "Recent changes",
     noScoreChanges: "No score changes yet.",
+    settings: "Settings",
+    language: "Language",
+    languageAuto: "Auto",
+    closeSettings: "Close settings",
     undo: "Undo",
   },
 } as const;
@@ -107,7 +115,26 @@ const normalizeLanguage = (value: string | null | undefined) => {
 const isSupportedLang = (value: string | null): value is SupportedLang =>
   SUPPORTED_LANGS.includes(value as SupportedLang);
 
+const readLanguageFromStore = (): "auto" | "fr" | "en" | null => {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem("board-game-scorekeeper-store-v1");
+    if (raw) {
+      const snapshot = JSON.parse(raw);
+      const lang = snapshot.settings?.language;
+      if (lang === "auto" || lang === "fr" || lang === "en") return lang;
+    }
+  } catch {
+    /* ignore */
+  }
+  return null;
+};
+
 export const getPreferredLanguage = (): SupportedLang => {
+  const storedLang = readLanguageFromStore();
+  if (storedLang && storedLang !== "auto" && isSupportedLang(storedLang))
+    return storedLang;
+
   if (typeof window !== "undefined") {
     const params = new URLSearchParams(window.location.search);
     const queryLang = normalizeLanguage(params.get("lang"));

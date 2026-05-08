@@ -14,6 +14,9 @@ type WakeLockNavigator = Navigator & {
 
 const getWakeLock = () => (navigator as WakeLockNavigator).wakeLock;
 
+export const isWakeLockSupported = () =>
+  typeof navigator !== "undefined" && Boolean(getWakeLock());
+
 export const useWakeLock = (enabled: boolean) => {
   const sentinelRef = useRef<WakeLockSentinel | null>(null);
   const [isSupported] = useState(

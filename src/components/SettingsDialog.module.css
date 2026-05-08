@@ -1,0 +1,150 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0.75rem;
+  background: rgba(23, 25, 35, 0.46);
+  backdrop-filter: blur(10px);
+}
+
+.sheet {
+  display: grid;
+  gap: 1.25rem;
+  width: min(100%, 34rem);
+  max-height: calc(100vh - 1.5rem);
+  max-height: calc(100dvh - 1.5rem);
+  overflow: auto;
+  padding: 1rem 1rem calc(1rem + var(--safe-bottom));
+  border-radius: 1.65rem 1.65rem 1.1rem 1.1rem;
+  background: #111827;
+  box-shadow: 0 2rem 6rem rgba(0, 0, 0, 0.34);
+  color: #e5e7eb;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.2rem;
+  color: #9ca3af;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.header h2 {
+  margin: 0;
+  font-size: 1.6rem;
+  line-height: 1;
+  letter-spacing: -0.06em;
+}
+
+.closeButton {
+  flex: 0 0 auto;
+  width: 2.65rem;
+  height: 2.65rem;
+  border: 0;
+  border-radius: 50%;
+  color: #e5e7eb;
+  background: #1f2937;
+  font-size: 1.7rem;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.section {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.section h3 {
+  margin: 0;
+  color: #9ca3af;
+  font-size: 0.84rem;
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.segmentedControl {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.4rem;
+  padding: 0.35rem;
+  border-radius: 1rem;
+  background: #0f172a;
+}
+
+.segmentButton {
+  min-height: 2.65rem;
+  border: 0;
+  border-radius: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  color: #9ca3af;
+  background: transparent;
+  font-size: 0.92rem;
+  font-weight: 900;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+
+.segmentActive {
+  color: #020617;
+  background: #e5e7eb;
+}
+
+.toggleButton {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  width: 100%;
+  border: 0;
+  padding: 0.65rem 0.15rem;
+  color: inherit;
+  background: transparent;
+  font-size: 1rem;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.toggleTrack {
+  position: relative;
+  width: 2.85rem;
+  height: 1.65rem;
+  flex-shrink: 0;
+  border-radius: 999px;
+  background: #374151;
+  transition: background 0.2s;
+}
+
+.toggleActive .toggleTrack {
+  background: #22c55e;
+}
+
+.toggleThumb {
+  position: absolute;
+  top: 0.18rem;
+  left: 0.18rem;
+  width: 1.29rem;
+  height: 1.29rem;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.2s;
+}
+
+.toggleActive .toggleThumb {
+  transform: translateX(1.2rem);
+}
+
+.toggleLabel {
+  color: #e5e7eb;
+}

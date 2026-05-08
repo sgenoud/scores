@@ -184,11 +184,32 @@ export const ScoreSheetModel = types
     },
   }));
 
+export const SettingsModel = types
+  .model("Settings", {
+    language: types.optional(
+      types.enumeration(["auto", "fr", "en"]),
+      "auto",
+    ),
+    wakeLockEnabled: types.optional(types.boolean, true),
+  })
+  .actions((self) => ({
+    setLanguage(lang: "auto" | "fr" | "en") {
+      self.language = lang;
+    },
+    setWakeLockEnabled(value: boolean) {
+      self.wakeLockEnabled = value;
+    },
+    toggleWakeLock() {
+      self.wakeLockEnabled = !self.wakeLockEnabled;
+    },
+  }));
+
 export const RootStoreModel = types
   .model("RootStore", {
     sheets: types.optional(types.array(ScoreSheetModel), []),
     savedGroups: types.optional(types.array(SavedGroupModel), []),
     currentSheetId: types.maybeNull(types.string),
+    settings: types.optional(SettingsModel, {}),
   })
   .views((self) => ({
     get currentSheet() {
@@ -281,6 +302,7 @@ export type ScoreEntryInstance = Instance<typeof ScoreEntryModel>;
 export type PlayerInstance = Instance<typeof PlayerModel>;
 export type SavedGroupInstance = Instance<typeof SavedGroupModel>;
 export type ScoreSheetInstance = Instance<typeof ScoreSheetModel>;
+export type SettingsInstance = Instance<typeof SettingsModel>;
 export type RootStoreInstance = Instance<typeof RootStoreModel>;
 type RootSnapshot = SnapshotIn<typeof RootStoreModel>;
 
@@ -288,6 +310,10 @@ const defaultSnapshot: RootSnapshot = {
   sheets: [],
   savedGroups: [],
   currentSheetId: null,
+  settings: {
+    language: "auto",
+    wakeLockEnabled: true,
+  },
 };
 
 const readSnapshot = (): RootSnapshot => {
