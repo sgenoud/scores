@@ -31,22 +31,46 @@ export const ScoreDialog = observer(
     const inputRef = useRef<HTMLInputElement>(null);
     const recentEntries = [...player.entries].reverse().slice(0, 8);
 
-    const keepHeaderVisible = useCallback(() => {
-      dialogRef.current?.scrollTo({ top: 0 });
-    }, []);
-
     const focusValueInput = useCallback(() => {
       requestAnimationFrame(() => {
         inputRef.current?.focus({ preventScroll: true });
-        keepHeaderVisible();
-        window.setTimeout(keepHeaderVisible, 250);
+        window.setTimeout(() => {
+          inputRef.current?.scrollIntoView({ block: 'center', inline: 'nearest' });
+        }, 250);
       });
-    }, [keepHeaderVisible]);
+    }, []);
 
     useEffect(() => {
+      const updateViewport = () => {
+        const visualViewport = window.visualViewport;
+        const viewportHeight = visualViewport?.height ?? window.innerHeight;
+        const viewportTop = visualViewport?.offsetTop ?? 0;
+        const keyboardHeight = Math.max(0, window.innerHeight - viewportHeight - viewportTop);
+
+        document.documentElement.style.setProperty('--score-dialog-viewport-height', `${viewportHeight}px`);
+        document.documentElement.style.setProperty('--score-dialog-viewport-top', `${viewportTop}px`);
+        document.documentElement.style.setProperty(
+          '--score-dialog-top-padding',
+          keyboardHeight > 80 ? '0.75rem' : '3.5rem',
+        );
+      };
+
       document.body.classList.add('dialogOpen');
+      updateViewport();
+      window.visualViewport?.addEventListener('resize', updateViewport);
+      window.visualViewport?.addEventListener('scroll', updateViewport);
+      window.addEventListener('resize', updateViewport);
       focusValueInput();
-      return () => document.body.classList.remove('dialogOpen');
+
+      return () => {
+        document.body.classList.remove('dialogOpen');
+        window.visualViewport?.removeEventListener('resize', updateViewport);
+        window.visualViewport?.removeEventListener('scroll', updateViewport);
+        window.removeEventListener('resize', updateViewport);
+        document.documentElement.style.removeProperty('--score-dialog-viewport-height');
+        document.documentElement.style.removeProperty('--score-dialog-viewport-top');
+        document.documentElement.style.removeProperty('--score-dialog-top-padding');
+      };
     }, [focusValueInput]);
 
     const parsedValue = () => {

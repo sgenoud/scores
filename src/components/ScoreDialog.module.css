@@ -1,19 +1,21 @@
 .backdrop {
   position: fixed;
-  inset: 0;
+  top: var(--score-dialog-viewport-top, 0);
+  right: 0;
+  left: 0;
   z-index: 30;
   display: flex;
+  height: var(--score-dialog-viewport-height, 100dvh);
   align-items: flex-end;
   justify-content: center;
-  padding: 0.75rem;
+  padding: var(--score-dialog-top-padding, calc(3.5rem + var(--safe-top))) 0.75rem 0.75rem;
   background: rgba(23, 25, 35, 0.46);
   backdrop-filter: blur(10px);
 }
 
 .dialog {
   width: min(100%, 33rem);
-  max-height: calc(100vh - 1.5rem);
-  max-height: calc(100dvh - 1.5rem);
+  max-height: calc(100% - var(--score-dialog-top-padding, 3.5rem) - 0.75rem);
   overflow: auto;
   overscroll-behavior: contain;
   padding: 1rem 1rem calc(1rem + var(--safe-bottom));
@@ -24,10 +26,16 @@
 
 .header {
   --player-color: #3b82f6;
+  position: sticky;
+  top: -1rem;
+  z-index: 2;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 0.75rem;
+  margin-top: -1rem;
+  padding: 1rem 0 0.7rem;
+  background: linear-gradient(180deg, #fffaf1 0%, #fffaf1 82%, rgba(255, 250, 241, 0));
 }
 
 .avatar {
