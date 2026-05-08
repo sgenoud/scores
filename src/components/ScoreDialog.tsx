@@ -12,7 +12,7 @@ const formatEntryTime = (createdAt: number) =>
 
 const scoreFontSize = (score: number) => {
   const digits = String(score).length;
-  const rem = Math.max(1.25, Math.min(7, 34 / digits));
+  const rem = Math.max(1.1, Math.min(3.6, 18 / digits));
   return `${rem.toFixed(2)}rem`;
 };
 
@@ -32,12 +32,12 @@ export const ScoreDialog = observer(
     const recentEntries = [...player.entries].reverse().slice(0, 8);
 
     const focusValueInput = useCallback(() => {
-      requestAnimationFrame(() => {
-        inputRef.current?.focus({ preventScroll: true });
-        window.setTimeout(() => {
-          inputRef.current?.scrollIntoView({ block: 'center', inline: 'nearest' });
-        }, 250);
-      });
+      inputRef.current?.focus();
+    }, []);
+
+    const setValueInput = useCallback((element: HTMLInputElement | null) => {
+      inputRef.current = element;
+      element?.focus();
     }, []);
 
     useEffect(() => {
@@ -45,14 +45,8 @@ export const ScoreDialog = observer(
         const visualViewport = window.visualViewport;
         const viewportHeight = visualViewport?.height ?? window.innerHeight;
         const viewportTop = visualViewport?.offsetTop ?? 0;
-        const keyboardHeight = Math.max(0, window.innerHeight - viewportHeight - viewportTop);
-
         document.documentElement.style.setProperty('--score-dialog-viewport-height', `${viewportHeight}px`);
         document.documentElement.style.setProperty('--score-dialog-viewport-top', `${viewportTop}px`);
-        document.documentElement.style.setProperty(
-          '--score-dialog-top-padding',
-          keyboardHeight > 80 ? '0.75rem' : '3.5rem',
-        );
       };
 
       document.body.classList.add('dialogOpen');
@@ -69,7 +63,6 @@ export const ScoreDialog = observer(
         window.removeEventListener('resize', updateViewport);
         document.documentElement.style.removeProperty('--score-dialog-viewport-height');
         document.documentElement.style.removeProperty('--score-dialog-viewport-top');
-        document.documentElement.style.removeProperty('--score-dialog-top-padding');
       };
     }, [focusValueInput]);
 
@@ -137,11 +130,13 @@ export const ScoreDialog = observer(
             <label className={styles.valueLabel}>
               {t('value')}
               <input
-                ref={inputRef}
+                ref={setValueInput}
+                autoFocus
                 inputMode="numeric"
                 min="1"
+                pattern="[0-9]*"
                 step="1"
-                type="number"
+                type="text"
                 value={value}
                 onChange={(event) => setValue(event.target.value)}
                 aria-label={t('scoreValue')}
