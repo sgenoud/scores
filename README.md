@@ -10,7 +10,7 @@ A mobile-first, offline-capable React/Vite score sheet for board games.
 - Quick `+1` / `-1` controls on the main screen
 - Detailed score dialog for custom values and undoing recent changes
 - MobX-State-Tree data model persisted to `localStorage`
-- PWA/service worker support via `vite-plugin-pwa`
+- PWA/service worker support via `vite-plugin-pwa` for offline use after the first visit
 
 ## Scripts
 
