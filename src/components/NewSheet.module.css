@@ -3,8 +3,7 @@
   min-height: 100vh;
   min-height: 100dvh;
   margin: 0 auto;
-  padding: calc(1.2rem + var(--safe-top)) 1rem
-    calc(1.25rem + var(--safe-bottom));
+  padding: calc(1.2rem + var(--safe-top)) 1rem calc(1.25rem + var(--safe-bottom));
 }
 
 .hero {
