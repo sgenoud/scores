@@ -76,8 +76,14 @@ export const ScoreSheet = observer(({ sheet }: { sheet: ScoreSheetInstance }) =>
       <div className={styles.toolbar}>
         <span>{plural(sheet.players.length, 'playersCount', 'playersCountPlural')}</span>
         <div className={styles.sortControls}>
-          <button className={styles.sortButton} type="button" onClick={() => sheet.toggleSortDirection()}>
-            {sortLabel}
+          <button
+            className={`${styles.sortButton} ${styles.sortIconButton}`}
+            type="button"
+            onClick={() => sheet.toggleSortDirection()}
+            aria-label={sortLabel}
+            title={sortLabel}
+          >
+            {sheet.sortDirection === 'desc' ? '▼' : '▲'}
           </button>
           <button className={styles.sortButton} type="button" onClick={() => sheet.sortPlayersByScore()}>
             {t('sort')}

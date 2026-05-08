@@ -37,7 +37,7 @@ const GroupCard = observer(({ group, onPlay }: { group: SavedGroupInstance; onPl
 ));
 
 export const NewSheet = observer(({ store }: { store: RootStoreInstance }) => {
-  const [namesText, setNamesText] = useState('A\nB\nC\nD');
+  const [namesText, setNamesText] = useState('');
   const [showAllGroups, setShowAllGroups] = useState(false);
   const recentGroups = store.recentGroups;
   const latestGroups = recentGroups.slice(0, 5);

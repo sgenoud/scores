@@ -76,6 +76,16 @@
   box-shadow: inset 0 0 0 1px rgba(23, 25, 35, 0.1);
 }
 
+.sortIconButton {
+  display: grid;
+  width: 2.65rem;
+  min-width: 2.65rem;
+  padding-inline: 0;
+  place-items: center;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
 .playerList {
   display: grid;
   gap: 0.72rem;
