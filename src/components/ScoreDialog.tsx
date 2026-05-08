@@ -149,15 +149,6 @@ export const ScoreDialog = observer(
               />
             </label>
 
-            <label className={styles.keepOpenToggle}>
-              <input
-                type="checkbox"
-                checked={sheet.keepScoreDialogOpen}
-                onChange={(event) => sheet.setKeepScoreDialogOpen(event.target.checked)}
-              />
-              <span>{t('keepMenuOpen')}</span>
-            </label>
-
             <div className={styles.formActions}>
               <button className={styles.deleteButton} type="button" onClick={() => submitValue(-1)}>
                 {t('delete')}
@@ -166,6 +157,15 @@ export const ScoreDialog = observer(
                 {t('add')}
               </button>
             </div>
+
+            <label className={styles.keepOpenToggle}>
+              <input
+                type="checkbox"
+                checked={sheet.keepScoreDialogOpen}
+                onChange={(event) => sheet.setKeepScoreDialogOpen(event.target.checked)}
+              />
+              <span>{t('keepMenuOpen')}</span>
+            </label>
           </form>
 
           <div className={styles.quickGrid}>
@@ -193,13 +193,7 @@ export const ScoreDialog = observer(
                       {entry.value > 0 ? `+${entry.value}` : entry.value}
                     </span>
                     <time>{formatEntryTime(entry.createdAt)}</time>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        sheet.removeScoreEntry(player.id, entry.id);
-                        finishChange();
-                      }}
-                    >
+                    <button type="button" onClick={() => sheet.removeScoreEntry(player.id, entry.id)}>
                       {t('undo')}
                     </button>
                   </li>
