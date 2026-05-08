@@ -36,8 +36,7 @@ const normalizeNames = (names: string[]) =>
     .filter(Boolean)
     .join('|');
 
-const makeGroupTitle = (names: string[]) =>
-  names.length <= 3 ? names.join(' · ') : `${names.slice(0, 3).join(' · ')} +${names.length - 3}`;
+const makeGroupTitle = (names: string[]) => names.join(' · ');
 
 export const ScoreEntryModel = types.model('ScoreEntry', {
   id: types.identifier,

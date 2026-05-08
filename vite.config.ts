@@ -7,7 +7,15 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['pwa-192x192.svg', 'pwa-512x512.svg'],
+      includeAssets: [
+        'pwa-512x512.svg',
+        'favicon-16x16.png',
+        'favicon-32x32.png',
+        'apple-touch-icon.png',
+        'apple-touch-icon-167.png',
+        'apple-touch-icon-152.png',
+        'apple-touch-icon-120.png',
+      ],
       workbox: {
         cleanupOutdatedCaches: true,
         clientsClaim: true,
@@ -27,15 +35,15 @@ export default defineConfig({
         scope: '/',
         icons: [
           {
-            src: 'pwa-192x192.svg',
+            src: 'icon-192.png',
             sizes: '192x192',
-            type: 'image/svg+xml',
+            type: 'image/png',
             purpose: 'any maskable',
           },
           {
-            src: 'pwa-512x512.svg',
+            src: 'icon-512.png',
             sizes: '512x512',
-            type: 'image/svg+xml',
+            type: 'image/png',
             purpose: 'any maskable',
           },
         ],

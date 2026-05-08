@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "node node_modules/prettier/bin/prettier.cjs --write .",
-    "format:check": "node node_modules/prettier/bin/prettier.cjs --check ."
+    "format:check": "node node_modules/prettier/bin/prettier.cjs --check .",
+    "generate:ios-splash": "sh scripts/generate-ios-splash.sh"
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",
@@ -32,6 +33,7 @@
     "eslint-plugin-react-refresh": "latest",
     "globals": "latest",
     "prettier": "^3.8.3",
+    "sharp": "^0.34.5",
     "typescript-eslint": "latest"
   }
 }

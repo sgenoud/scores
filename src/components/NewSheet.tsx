@@ -20,11 +20,13 @@ const initialsFor = (name: string) => {
   return `${parts[0][0] ?? ''}${parts[parts.length - 1][0] ?? ''}`.toUpperCase();
 };
 
+const groupTitle = (group: SavedGroupInstance) => group.players.map((player) => player.name).join(' · ');
+
 const GroupCard = observer(({ group, onPlay }: { group: SavedGroupInstance; onPlay: () => void }) => (
   <button className={styles.groupCard} type="button" onClick={onPlay}>
     <RoughSeparator seed={seedFromText(`${group.id}-separator`)} />
     <div className={styles.groupHeader}>
-      <strong>{group.name}</strong>
+      <strong>{groupTitle(group)}</strong>
       <span>{group.playCount}×</span>
     </div>
     <div className={styles.groupPlayers}>
