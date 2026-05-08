@@ -1,4 +1,4 @@
-import { CSSProperties, useState } from 'react';
+import { CSSProperties, useEffect, useRef, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { plural, t } from '../i18n';
 import { PlayerInstance, ScoreSheetInstance } from '../models/scoreStore';
@@ -11,6 +11,8 @@ import { RoughSeparator } from './RoughSeparator';
 import { ScoreDialog } from './ScoreDialog';
 import styles from './ScoreSheet.module.css';
 
+const QUICK_SCORE_MERGE_MS = 900;
+
 const scoreFontSize = (score: number) => {
   const digits = String(score).length;
   const rem = Math.max(0.35, Math.min(2.45, 5.2 / digits));
@@ -21,6 +23,31 @@ const seedFromId = seedFromText;
 
 const PlayerRow = observer(({ player, sheet }: { player: PlayerInstance; sheet: ScoreSheetInstance }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [pendingDelta, setPendingDelta] = useState(0);
+  const pendingDeltaRef = useRef(0);
+  const pendingTimerRef = useRef<number | null>(null);
+
+  useEffect(
+    () => () => {
+      if (pendingTimerRef.current) window.clearTimeout(pendingTimerRef.current);
+    },
+    [],
+  );
+
+  const addQuickScore = (value: 1 | -1) => {
+    sheet.addScore(player.id, value, QUICK_SCORE_MERGE_MS, 'quick');
+    pendingDeltaRef.current += value;
+    setPendingDelta(pendingDeltaRef.current);
+
+    if (pendingTimerRef.current) window.clearTimeout(pendingTimerRef.current);
+    if (pendingDeltaRef.current === 0) return;
+
+    pendingTimerRef.current = window.setTimeout(() => {
+      pendingDeltaRef.current = 0;
+      pendingTimerRef.current = null;
+      setPendingDelta(0);
+    }, QUICK_SCORE_MERGE_MS);
+  };
 
   return (
     <article className={styles.playerCard} style={{ '--player-color': player.color } as CSSProperties}>
@@ -37,27 +64,34 @@ const PlayerRow = observer(({ player, sheet }: { player: PlayerInstance; sheet: 
       <button
         className={`${styles.scoreDeltaButton} ${styles.minusButton}`}
         type="button"
-        onClick={() => sheet.addScore(player.id, -1)}
+        onClick={() => addQuickScore(-1)}
         aria-label={t('subtractOne', { name: player.name })}
       >
         <RoughBox color="rgba(203, 213, 225, 0.82)" seed={seedFromId(`${player.id}-minus`)} />
         <span>−1</span>
       </button>
 
-      <button
-        className={styles.scoreButton}
-        style={{ fontSize: scoreFontSize(player.score) }}
-        type="button"
-        onClick={() => setIsDialogOpen(true)}
-        aria-label={t('openScoreControls', { name: player.name })}
-      >
-        {player.score}
-      </button>
+      <div className={styles.scoreCell}>
+        <button
+          className={styles.scoreButton}
+          style={{ fontSize: scoreFontSize(player.score) }}
+          type="button"
+          onClick={() => setIsDialogOpen(true)}
+          aria-label={t('openScoreControls', { name: player.name })}
+        >
+          {player.score}
+        </button>
+        {pendingDelta !== 0 ? (
+          <div className={pendingDelta > 0 ? styles.pendingPositive : styles.pendingNegative}>
+            {pendingDelta > 0 ? `+${pendingDelta}` : pendingDelta}
+          </div>
+        ) : null}
+      </div>
 
       <button
         className={`${styles.scoreDeltaButton} ${styles.plusButton}`}
         type="button"
-        onClick={() => sheet.addScore(player.id, 1)}
+        onClick={() => addQuickScore(1)}
         aria-label={t('addOne', { name: player.name })}
       >
         <RoughBox

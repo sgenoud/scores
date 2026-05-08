@@ -38,10 +38,13 @@ const normalizeNames = (names: string[]) =>
 
 const makeGroupTitle = (names: string[]) => names.join(' · ');
 
+export type ScoreEntrySource = 'manual' | 'quick';
+
 export const ScoreEntryModel = types.model('ScoreEntry', {
   id: types.identifier,
   value: types.number,
   createdAt: types.number,
+  source: types.optional(types.enumeration(['manual', 'quick']), 'manual'),
 });
 
 export const PlayerModel = types
@@ -64,14 +67,33 @@ export const PlayerModel = types
     },
   }))
   .actions((self) => ({
-    addValue(value: number) {
+    addValue(value: number, mergeWindowMs = 0, source: ScoreEntrySource = 'manual') {
       const safeValue = Math.trunc(value);
       if (!Number.isFinite(safeValue) || safeValue === 0) return;
+
+      const now = Date.now();
+      const previousEntry = self.entries.at(-1);
+      if (
+        previousEntry &&
+        previousEntry.source === source &&
+        mergeWindowMs > 0 &&
+        now - previousEntry.createdAt <= mergeWindowMs
+      ) {
+        previousEntry.value += safeValue;
+        previousEntry.createdAt = now;
+
+        if (previousEntry.value === 0) {
+          self.entries.remove(previousEntry);
+        }
+        return;
+      }
+
       self.entries.push(
         cast({
           id: randomId(),
           value: safeValue,
-          createdAt: Date.now(),
+          createdAt: now,
+          source,
         }),
       );
     },
@@ -139,10 +161,10 @@ export const ScoreSheetModel = types
       self.players.replace(sortedPlayers);
       self.updatedAt = Date.now();
     },
-    addScore(playerId: string, value: number) {
+    addScore(playerId: string, value: number, mergeWindowMs = 0, source: ScoreEntrySource = 'manual') {
       const player = self.players.find((item) => item.id === playerId);
       if (!player) return;
-      player.addValue(value);
+      player.addValue(value, mergeWindowMs, source);
       self.updatedAt = Date.now();
     },
     removeScoreEntry(playerId: string, entryId: string) {
