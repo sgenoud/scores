@@ -261,3 +261,47 @@
   font-size: 0.9rem;
   font-weight: 850;
 }
+
+.screen {
+  color: #e5e7eb;
+}
+
+.eyebrow,
+.lede,
+.panelTitle span,
+.groupHeader span,
+.label,
+.allGroupsCount {
+  color: #9ca3af;
+}
+
+.continueButton,
+.startButton,
+.allGroupsButton {
+  color: #020617;
+  background: #e5e7eb;
+}
+
+.panel,
+.allGroupsSheet {
+  border-color: rgba(229, 231, 235, 0.1);
+  background: rgba(17, 24, 39, 0.9);
+  box-shadow: 0 0.9rem 2rem rgba(0, 0, 0, 0.22);
+}
+
+.groupCard {
+  color: #f9fafb;
+  background: #0f172a;
+}
+
+.label input,
+.label textarea {
+  color: #f9fafb;
+  background: #020617;
+  box-shadow: inset 0 0 0 1px rgba(229, 231, 235, 0.12);
+}
+
+.closeButton {
+  color: #e5e7eb;
+  background: #1f2937;
+}

@@ -246,3 +246,45 @@
   font-weight: 900;
   cursor: pointer;
 }
+
+.dialog {
+  color: #e5e7eb;
+  background: #111827;
+}
+
+.header {
+  background: linear-gradient(180deg, #111827 0%, #111827 82%, rgba(17, 24, 39, 0));
+}
+
+.eyebrow,
+.valueLabel,
+.keepOpenToggle,
+.history h3,
+.history time,
+.emptyHistory {
+  color: #9ca3af;
+}
+
+.currentScore,
+.history li {
+  color: #f9fafb;
+  background: #0f172a;
+}
+
+.valueLabel input {
+  color: #f9fafb;
+  background: #020617;
+  box-shadow: inset 0 0 0 1px rgba(229, 231, 235, 0.12);
+}
+
+.closeButton,
+.history li button {
+  color: #e5e7eb;
+  background: #1f2937;
+}
+
+.addButton,
+.quickGrid button {
+  color: #020617;
+  background: #e5e7eb;
+}

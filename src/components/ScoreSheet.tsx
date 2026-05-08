@@ -3,6 +3,7 @@ import { observer } from 'mobx-react-lite';
 import { plural, t } from '../i18n';
 import { PlayerInstance, ScoreSheetInstance } from '../models/scoreStore';
 import { useStore } from '../storeContext';
+import { useWakeLock } from '../useWakeLock';
 import { ScoreDialog } from './ScoreDialog';
 import styles from './ScoreSheet.module.css';
 
@@ -59,7 +60,10 @@ const PlayerRow = observer(({ player, sheet }: { player: PlayerInstance; sheet: 
 
 export const ScoreSheet = observer(({ sheet }: { sheet: ScoreSheetInstance }) => {
   const store = useStore();
+  const [wakeLockEnabled, setWakeLockEnabled] = useState(true);
+  const wakeLock = useWakeLock(wakeLockEnabled);
   const sortLabel = sheet.sortDirection === 'desc' ? t('highFirst') : t('lowFirst');
+  const wakeLockLabel = wakeLockEnabled && wakeLock.isActive ? t('wakeLockOn') : t('wakeLockOff');
 
   return (
     <section className={styles.screen}>
@@ -96,6 +100,18 @@ export const ScoreSheet = observer(({ sheet }: { sheet: ScoreSheetInstance }) =>
           <PlayerRow key={player.id} player={player} sheet={sheet} />
         ))}
       </div>
+
+      {wakeLock.isSupported ? (
+        <button
+          className={`${styles.bottomToggleButton} ${styles.wakeButton} ${wakeLockEnabled ? styles.wakeButtonActive : ''}`}
+          type="button"
+          onClick={() => setWakeLockEnabled((enabled) => !enabled)}
+          aria-label={wakeLockEnabled ? t('wakeLockDisable') : t('wakeLockEnable')}
+          title={wakeLockEnabled ? t('wakeLockDisable') : t('wakeLockEnable')}
+        >
+          {wakeLockLabel}
+        </button>
+      ) : null}
     </section>
   );
 });
