@@ -2,8 +2,12 @@ import { CSSProperties, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { plural, t } from '../i18n';
 import { PlayerInstance, ScoreSheetInstance } from '../models/scoreStore';
+import { seedFromText } from '../seed';
 import { useStore } from '../storeContext';
 import { useWakeLock } from '../useWakeLock';
+import { RoughAvatar } from './RoughAvatar';
+import { RoughBox } from './RoughBox';
+import { RoughSeparator } from './RoughSeparator';
 import { ScoreDialog } from './ScoreDialog';
 import styles from './ScoreSheet.module.css';
 
@@ -13,13 +17,20 @@ const scoreFontSize = (score: number) => {
   return `${rem.toFixed(2)}rem`;
 };
 
+const seedFromId = seedFromText;
+
 const PlayerRow = observer(({ player, sheet }: { player: PlayerInstance; sheet: ScoreSheetInstance }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   return (
     <article className={styles.playerCard} style={{ '--player-color': player.color } as CSSProperties}>
+      <RoughSeparator seed={seedFromId(player.id)} />
       <div className={styles.playerIdentity}>
-        <div className={styles.avatar}>{player.initials}</div>
+        <RoughAvatar
+          initials={player.initials}
+          color={player.color}
+          seed={seedFromId(`${player.id}-avatar`)}
+        />
         <div className={styles.playerName}>{player.name}</div>
       </div>
 
@@ -29,7 +40,8 @@ const PlayerRow = observer(({ player, sheet }: { player: PlayerInstance; sheet: 
         onClick={() => sheet.addScore(player.id, -1)}
         aria-label={t('subtractOne', { name: player.name })}
       >
-        −1
+        <RoughBox color="rgba(203, 213, 225, 0.82)" seed={seedFromId(`${player.id}-minus`)} />
+        <span>−1</span>
       </button>
 
       <button
@@ -48,7 +60,11 @@ const PlayerRow = observer(({ player, sheet }: { player: PlayerInstance; sheet: 
         onClick={() => sheet.addScore(player.id, 1)}
         aria-label={t('addOne', { name: player.name })}
       >
-        +1
+        <RoughBox
+          color="color-mix(in srgb, var(--player-color) 72%, white 28%)"
+          seed={seedFromId(`${player.id}-plus`)}
+        />
+        <span>+1</span>
       </button>
 
       {isDialogOpen ? (
@@ -63,7 +79,6 @@ export const ScoreSheet = observer(({ sheet }: { sheet: ScoreSheetInstance }) =>
   const [wakeLockEnabled, setWakeLockEnabled] = useState(true);
   const wakeLock = useWakeLock(wakeLockEnabled);
   const sortLabel = sheet.sortDirection === 'desc' ? t('highFirst') : t('lowFirst');
-  const wakeLockLabel = wakeLockEnabled && wakeLock.isActive ? t('wakeLockOn') : t('wakeLockOff');
 
   return (
     <section className={styles.screen}>
@@ -109,7 +124,7 @@ export const ScoreSheet = observer(({ sheet }: { sheet: ScoreSheetInstance }) =>
           aria-label={wakeLockEnabled ? t('wakeLockDisable') : t('wakeLockEnable')}
           title={wakeLockEnabled ? t('wakeLockDisable') : t('wakeLockEnable')}
         >
-          {wakeLockLabel}
+          {wakeLockEnabled && wakeLock.isActive ? '◉' : '○'}
         </button>
       ) : null}
     </section>

@@ -2,6 +2,8 @@ import { CSSProperties, FormEvent, useCallback, useEffect, useRef, useState } fr
 import { observer } from 'mobx-react-lite';
 import { currentLang, t } from '../i18n';
 import { PlayerInstance, ScoreSheetInstance } from '../models/scoreStore';
+import { seedFromText } from '../seed';
+import { RoughAvatar } from './RoughAvatar';
 import styles from './ScoreDialog.module.css';
 
 const formatEntryTime = (createdAt: number) =>
@@ -107,7 +109,11 @@ export const ScoreDialog = observer(
           onClick={(event) => event.stopPropagation()}
         >
           <header className={styles.header} style={{ '--player-color': player.color } as CSSProperties}>
-            <div className={styles.avatar}>{player.initials}</div>
+            <RoughAvatar
+              initials={player.initials}
+              color={player.color}
+              seed={seedFromText(`${player.id}-dialog-avatar`)}
+            />
             <div>
               <p className={styles.eyebrow}>{t('adjustScore')}</p>
               <h2 id="score-dialog-title">{player.name}</h2>

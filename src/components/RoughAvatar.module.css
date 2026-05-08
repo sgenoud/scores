@@ -1,0 +1,44 @@
+.avatar {
+  --rough-avatar-color: #3b82f6;
+  position: relative;
+  display: grid;
+  flex: 0 0 auto;
+  width: 3.35rem;
+  height: 3.35rem;
+  place-items: center;
+  color: white;
+  isolation: isolate;
+  font-size: clamp(1.15rem, 7vw, 1.6rem);
+  font-weight: 1000;
+  letter-spacing: -0.08em;
+  text-shadow: 0 0 0.35rem rgba(255, 255, 255, 0.22);
+}
+
+.small {
+  width: 2.4rem;
+  height: 2.4rem;
+  font-size: 1rem;
+}
+
+.svg {
+  position: absolute;
+  inset: -0.12rem;
+  z-index: -1;
+  overflow: visible;
+  opacity: 0.96;
+  filter: drop-shadow(0 0.25rem 0.45rem rgba(0, 0, 0, 0.18));
+  pointer-events: none;
+}
+
+.label {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 430px) {
+  .avatar:not(.small) {
+    width: 3rem;
+    height: 3rem;
+    font-size: clamp(1.1rem, 6vw, 1.45rem);
+  }
+}

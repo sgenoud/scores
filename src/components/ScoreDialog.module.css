@@ -38,19 +38,6 @@
   background: linear-gradient(180deg, #fffaf1 0%, #fffaf1 82%, rgba(255, 250, 241, 0));
 }
 
-.avatar {
-  display: grid;
-  width: 3.4rem;
-  height: 3.4rem;
-  place-items: center;
-  border-radius: 1rem;
-  color: white;
-  background: var(--player-color);
-  font-size: 1.35rem;
-  font-weight: 1000;
-  letter-spacing: -0.08em;
-}
-
 .eyebrow {
   margin: 0 0 0.2rem;
   color: #7c6f5b;
@@ -161,8 +148,9 @@
   background: #4b5563;
 }
 
-.addButton {
-  background: #171923;
+.formActions .addButton {
+  color: #052e16;
+  background: #86efac;
 }
 
 .quickGrid {
@@ -283,8 +271,12 @@
   background: #1f2937;
 }
 
-.addButton,
 .quickGrid button {
   color: #020617;
   background: #e5e7eb;
+}
+
+.formActions .addButton {
+  color: #052e16;
+  background: #86efac;
 }

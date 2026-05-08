@@ -1,7 +1,10 @@
-import { CSSProperties, FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { plural, t } from '../i18n';
 import { RootStoreInstance, SavedGroupInstance } from '../models/scoreStore';
+import { seedFromText } from '../seed';
+import { RoughAvatar } from './RoughAvatar';
+import { RoughSeparator } from './RoughSeparator';
 import styles from './NewSheet.module.css';
 
 const splitNames = (text: string) =>
@@ -19,18 +22,20 @@ const initialsFor = (name: string) => {
 
 const GroupCard = observer(({ group, onPlay }: { group: SavedGroupInstance; onPlay: () => void }) => (
   <button className={styles.groupCard} type="button" onClick={onPlay}>
+    <RoughSeparator seed={seedFromText(`${group.id}-separator`)} />
     <div className={styles.groupHeader}>
       <strong>{group.name}</strong>
       <span>{group.playCount}×</span>
     </div>
     <div className={styles.groupPlayers}>
       {group.players.map((player, index) => (
-        <span
+        <RoughAvatar
           key={`${group.id}-${index}-${player.name}`}
-          style={{ '--player-color': player.color } as CSSProperties}
-        >
-          {initialsFor(player.name)}
-        </span>
+          initials={initialsFor(player.name)}
+          color={player.color}
+          seed={seedFromText(`${group.id}-${index}-${player.name}-avatar`)}
+          size="small"
+        />
       ))}
     </div>
   </button>
@@ -73,51 +78,40 @@ export const NewSheet = observer(({ store }: { store: RootStoreInstance }) => {
         </button>
       ) : null}
 
-      {recentGroups.length > 0 ? (
-        <section className={styles.panel}>
-          <div className={styles.panelTitle}>
-            <h2>{t('latestGroups')}</h2>
-            <div className={styles.panelActions}>
-              <span>{t('tapToStart')}</span>
-              {recentGroups.length > latestGroups.length ? (
-                <button
-                  className={styles.allGroupsButton}
-                  type="button"
-                  onClick={() => setShowAllGroups(true)}
-                >
-                  {t('all')}
-                </button>
-              ) : null}
-            </div>
-          </div>
-          <div className={styles.groupGrid}>
-            {latestGroups.map((group) => (
-              <GroupCard key={group.id} group={group} onPlay={() => store.createSheetFromGroup(group.id)} />
-            ))}
-          </div>
-        </section>
-      ) : null}
-
-      <form className={styles.panel} onSubmit={handleSubmit}>
-        <div className={styles.panelTitle}>
-          <h2>{t('newGroup')}</h2>
-          <span>{plural(splitNames(namesText).length, 'playersCount', 'playersCountPlural')}</span>
+      <section className={styles.panel}>
+        <div className={styles.groupGrid}>
+          {latestGroups.map((group) => (
+            <GroupCard key={group.id} group={group} onPlay={() => store.createSheetFromGroup(group.id)} />
+          ))}
         </div>
 
-        <label className={styles.label}>
-          {t('players')}
-          <textarea
-            value={namesText}
-            onChange={(event) => setNamesText(event.target.value)}
-            placeholder={t('playersPlaceholder')}
-            rows={6}
-          />
-        </label>
+        {recentGroups.length > latestGroups.length ? (
+          <button className={styles.allGroupsRow} type="button" onClick={() => setShowAllGroups(true)}>
+            <RoughSeparator seed={seedFromText('all-groups-separator')} />
+            <span>{t('seeAllGroups')}</span>
+            <small>{plural(recentGroups.length, 'savedGroupsCount', 'savedGroupsCountPlural')}</small>
+          </button>
+        ) : null}
 
-        <button className={styles.startButton} type="submit">
-          {t('createScoreSheet')}
-        </button>
-      </form>
+        <form className={styles.newGroupForm} onSubmit={handleSubmit}>
+          <label className={styles.label}>
+            {t('players')}
+            <textarea
+              value={namesText}
+              onChange={(event) => setNamesText(event.target.value)}
+              placeholder={t('playersPlaceholder')}
+              rows={6}
+            />
+          </label>
+
+          <div className={styles.newGroupFooter}>
+            <span>{plural(splitNames(namesText).length, 'playersCount', 'playersCountPlural')}</span>
+            <button className={styles.startButton} type="submit">
+              {t('createScoreSheet')}
+            </button>
+          </div>
+        </form>
+      </section>
 
       {showAllGroups ? (
         <div className={styles.sheetBackdrop} role="presentation" onClick={() => setShowAllGroups(false)}>
