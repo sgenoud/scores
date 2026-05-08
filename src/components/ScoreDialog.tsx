@@ -1,4 +1,4 @@
-import { CSSProperties, FormEvent, useEffect, useRef, useState } from 'react';
+import { CSSProperties, FormEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { currentLang, t } from '../i18n';
 import { PlayerInstance, ScoreSheetInstance } from '../models/scoreStore';
@@ -27,14 +27,27 @@ export const ScoreDialog = observer(
     onClose: () => void;
   }) => {
     const [value, setValue] = useState('');
+    const dialogRef = useRef<HTMLElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
     const recentEntries = [...player.entries].reverse().slice(0, 8);
 
+    const keepHeaderVisible = useCallback(() => {
+      dialogRef.current?.scrollTo({ top: 0 });
+    }, []);
+
+    const focusValueInput = useCallback(() => {
+      requestAnimationFrame(() => {
+        inputRef.current?.focus({ preventScroll: true });
+        keepHeaderVisible();
+        window.setTimeout(keepHeaderVisible, 250);
+      });
+    }, [keepHeaderVisible]);
+
     useEffect(() => {
       document.body.classList.add('dialogOpen');
-      inputRef.current?.focus();
+      focusValueInput();
       return () => document.body.classList.remove('dialogOpen');
-    }, []);
+    }, [focusValueInput]);
 
     const parsedValue = () => {
       const numberValue = Math.abs(Number(value));
@@ -44,7 +57,7 @@ export const ScoreDialog = observer(
     const finishChange = () => {
       if (sheet.keepScoreDialogOpen) {
         setValue('');
-        inputRef.current?.focus();
+        focusValueInput();
       } else {
         onClose();
       }
@@ -73,6 +86,7 @@ export const ScoreDialog = observer(
           role="dialog"
           aria-modal="true"
           aria-labelledby="score-dialog-title"
+          ref={dialogRef}
           onClick={(event) => event.stopPropagation()}
         >
           <header className={styles.header} style={{ '--player-color': player.color } as CSSProperties}>

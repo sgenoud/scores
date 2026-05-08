@@ -15,6 +15,7 @@
   max-height: calc(100vh - 1.5rem);
   max-height: calc(100dvh - 1.5rem);
   overflow: auto;
+  overscroll-behavior: contain;
   padding: 1rem 1rem calc(1rem + var(--safe-bottom));
   border-radius: 1.65rem 1.65rem 1.1rem 1.1rem;
   background: #fffaf1;
