@@ -3,8 +3,20 @@
   min-height: 100dvh;
   color: #e5e7eb;
   background:
-    radial-gradient(circle at top left, rgba(148, 163, 184, 0.08), transparent 32rem),
-    radial-gradient(circle at 80% 10%, rgba(59, 130, 246, 0.08), transparent 26rem),
-    repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.018) 0 1px, transparent 1px 9px),
+    radial-gradient(
+      circle at top left,
+      rgba(148, 163, 184, 0.08),
+      transparent 32rem
+    ),
+    radial-gradient(
+      circle at 80% 10%,
+      rgba(59, 130, 246, 0.08),
+      transparent 26rem
+    ),
+    repeating-linear-gradient(
+      115deg,
+      rgba(255, 255, 255, 0.018) 0 1px,
+      transparent 1px 9px
+    ),
     linear-gradient(180deg, #101820 0%, #0b1220 48%, #020617 100%);
 }

@@ -1,6 +1,6 @@
-import { useEffect, useRef } from 'react';
-import rough from 'roughjs/bin/rough';
-import styles from './RoughSeparator.module.css';
+import { useEffect, useRef } from "react";
+import rough from "roughjs/bin/rough";
+import styles from "./RoughSeparator.module.css";
 
 export const RoughSeparator = ({ seed }: { seed: number }) => {
   const svgRef = useRef<SVGSVGElement>(null);
@@ -15,13 +15,18 @@ export const RoughSeparator = ({ seed }: { seed: number }) => {
       bowing: 0.9,
       roughness: 2.4,
       seed,
-      stroke: 'rgba(229, 231, 235, 0.58)',
+      stroke: "rgba(229, 231, 235, 0.58)",
       strokeWidth: 1.35,
     });
     svg.appendChild(line);
   }, [seed]);
 
   return (
-    <svg ref={svgRef} className={styles.roughSeparator} viewBox="0 0 100 8" preserveAspectRatio="none" />
+    <svg
+      ref={svgRef}
+      className={styles.roughSeparator}
+      viewBox="0 0 100 8"
+      preserveAspectRatio="none"
+    />
   );
 };

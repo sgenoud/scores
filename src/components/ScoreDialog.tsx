@@ -1,16 +1,45 @@
-import { CSSProperties, FormEvent, useCallback, useEffect, useRef, useState } from 'react';
-import { observer } from 'mobx-react-lite';
-import { currentLang, t } from '../i18n';
-import { PlayerInstance, ScoreSheetInstance } from '../models/scoreStore';
-import { seedFromText } from '../seed';
-import { RoughAvatar } from './RoughAvatar';
-import styles from './ScoreDialog.module.css';
+import {
+  CSSProperties,
+  FormEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { observer } from "mobx-react-lite";
+import { currentLang, t } from "../i18n";
+import { PlayerInstance, ScoreSheetInstance } from "../models/scoreStore";
+import { seedFromText } from "../seed";
+import { RoughAvatar } from "./RoughAvatar";
+import styles from "./ScoreDialog.module.css";
 
-const formatEntryTime = (createdAt: number) =>
-  new Intl.DateTimeFormat(currentLang, {
-    hour: '2-digit',
-    minute: '2-digit',
-  }).format(createdAt);
+const relativeTimeFormatter = new Intl.RelativeTimeFormat(currentLang, {
+  numeric: "auto",
+  style: "short",
+});
+const exactTimeFormatter = new Intl.DateTimeFormat(currentLang, {
+  dateStyle: "medium",
+  timeStyle: "short",
+});
+
+const formatEntryTime = (createdAt: number, now: number) => {
+  const diffSeconds = Math.min(0, Math.round((createdAt - now) / 1000));
+  const absoluteSeconds = Math.abs(diffSeconds);
+
+  if (absoluteSeconds < 45)
+    return relativeTimeFormatter.format(diffSeconds, "second");
+
+  const diffMinutes = Math.round(diffSeconds / 60);
+  if (Math.abs(diffMinutes) < 45)
+    return relativeTimeFormatter.format(diffMinutes, "minute");
+
+  const diffHours = Math.round(diffMinutes / 60);
+  if (Math.abs(diffHours) < 22)
+    return relativeTimeFormatter.format(diffHours, "hour");
+
+  const diffDays = Math.round(diffHours / 24);
+  return relativeTimeFormatter.format(diffDays, "day");
+};
 
 const scoreFontSize = (score: number) => {
   const digits = String(score).length;
@@ -28,7 +57,8 @@ export const ScoreDialog = observer(
     sheet: ScoreSheetInstance;
     onClose: () => void;
   }) => {
-    const [value, setValue] = useState('');
+    const [value, setValue] = useState("");
+    const [now, setNow] = useState(() => Date.now());
     const dialogRef = useRef<HTMLElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
     const recentEntries = [...player.entries].reverse().slice(0, 8);
@@ -43,28 +73,43 @@ export const ScoreDialog = observer(
     }, []);
 
     useEffect(() => {
+      const timer = window.setInterval(() => setNow(Date.now()), 30_000);
+      return () => window.clearInterval(timer);
+    }, []);
+
+    useEffect(() => {
       const updateViewport = () => {
         const visualViewport = window.visualViewport;
         const viewportHeight = visualViewport?.height ?? window.innerHeight;
         const viewportTop = visualViewport?.offsetTop ?? 0;
-        document.documentElement.style.setProperty('--score-dialog-viewport-height', `${viewportHeight}px`);
-        document.documentElement.style.setProperty('--score-dialog-viewport-top', `${viewportTop}px`);
+        document.documentElement.style.setProperty(
+          "--score-dialog-viewport-height",
+          `${viewportHeight}px`,
+        );
+        document.documentElement.style.setProperty(
+          "--score-dialog-viewport-top",
+          `${viewportTop}px`,
+        );
       };
 
-      document.body.classList.add('dialogOpen');
+      document.body.classList.add("dialogOpen");
       updateViewport();
-      window.visualViewport?.addEventListener('resize', updateViewport);
-      window.visualViewport?.addEventListener('scroll', updateViewport);
-      window.addEventListener('resize', updateViewport);
+      window.visualViewport?.addEventListener("resize", updateViewport);
+      window.visualViewport?.addEventListener("scroll", updateViewport);
+      window.addEventListener("resize", updateViewport);
       focusValueInput();
 
       return () => {
-        document.body.classList.remove('dialogOpen');
-        window.visualViewport?.removeEventListener('resize', updateViewport);
-        window.visualViewport?.removeEventListener('scroll', updateViewport);
-        window.removeEventListener('resize', updateViewport);
-        document.documentElement.style.removeProperty('--score-dialog-viewport-height');
-        document.documentElement.style.removeProperty('--score-dialog-viewport-top');
+        document.body.classList.remove("dialogOpen");
+        window.visualViewport?.removeEventListener("resize", updateViewport);
+        window.visualViewport?.removeEventListener("scroll", updateViewport);
+        window.removeEventListener("resize", updateViewport);
+        document.documentElement.style.removeProperty(
+          "--score-dialog-viewport-height",
+        );
+        document.documentElement.style.removeProperty(
+          "--score-dialog-viewport-top",
+        );
       };
     }, [focusValueInput]);
 
@@ -75,7 +120,7 @@ export const ScoreDialog = observer(
 
     const finishChange = () => {
       if (sheet.keepScoreDialogOpen) {
-        setValue('');
+        setValue("");
         focusValueInput();
       } else {
         onClose();
@@ -84,6 +129,7 @@ export const ScoreDialog = observer(
 
     const addValue = (amount: number) => {
       sheet.addScore(player.id, amount);
+      setNow(Date.now());
       finishChange();
     };
 
@@ -108,33 +154,39 @@ export const ScoreDialog = observer(
           ref={dialogRef}
           onClick={(event) => event.stopPropagation()}
         >
-          <header className={styles.header} style={{ '--player-color': player.color } as CSSProperties}>
+          <header
+            className={styles.header}
+            style={{ "--player-color": player.color } as CSSProperties}
+          >
             <RoughAvatar
               initials={player.initials}
               color={player.color}
               seed={seedFromText(`${player.id}-dialog-avatar`)}
             />
             <div>
-              <p className={styles.eyebrow}>{t('adjustScore')}</p>
+              <p className={styles.eyebrow}>{t("adjustScore")}</p>
               <h2 id="score-dialog-title">{player.name}</h2>
             </div>
             <button
               className={styles.closeButton}
               type="button"
               onClick={onClose}
-              aria-label={t('closeScoreDialog')}
+              aria-label={t("closeScoreDialog")}
             >
               ×
             </button>
           </header>
 
-          <div className={styles.currentScore} style={{ fontSize: scoreFontSize(player.score) }}>
+          <div
+            className={styles.currentScore}
+            style={{ fontSize: scoreFontSize(player.score) }}
+          >
             {player.score}
           </div>
 
           <form className={styles.form} onSubmit={handleSubmit}>
             <label className={styles.valueLabel}>
-              {t('value')}
+              {t("value")}
               <input
                 ref={setValueInput}
                 autoFocus
@@ -145,56 +197,87 @@ export const ScoreDialog = observer(
                 type="text"
                 value={value}
                 onChange={(event) => setValue(event.target.value)}
-                aria-label={t('scoreValue')}
+                aria-label={t("scoreValue")}
               />
             </label>
 
             <div className={styles.formActions}>
-              <button className={styles.deleteButton} type="button" onClick={() => submitValue(-1)}>
-                {t('delete')}
+              <button
+                className={styles.deleteButton}
+                type="button"
+                onClick={() => submitValue(-1)}
+              >
+                {t("delete")}
               </button>
               <button className={styles.addButton} type="submit">
-                {t('add')}
+                {t("add")}
               </button>
             </div>
-
-            <label className={styles.keepOpenToggle}>
-              <input
-                type="checkbox"
-                checked={sheet.keepScoreDialogOpen}
-                onChange={(event) => sheet.setKeepScoreDialogOpen(event.target.checked)}
-              />
-              <span>{t('keepMenuOpen')}</span>
-            </label>
           </form>
 
           <div className={styles.quickGrid}>
             {[1, 5, 10].map((amount) => (
-              <button key={amount} type="button" onClick={() => addValue(amount)}>
+              <button
+                key={amount}
+                type="button"
+                onClick={() => addValue(amount)}
+              >
                 +{amount}
               </button>
             ))}
             {[-1, -5, -10].map((amount) => (
-              <button key={amount} type="button" onClick={() => addValue(amount)}>
+              <button
+                key={amount}
+                type="button"
+                onClick={() => addValue(amount)}
+              >
                 {amount}
               </button>
             ))}
           </div>
 
+          <form>
+            <label className={styles.keepOpenToggle}>
+              <input
+                type="checkbox"
+                checked={sheet.keepScoreDialogOpen}
+                onChange={(event) =>
+                  sheet.setKeepScoreDialogOpen(event.target.checked)
+                }
+              />
+              <span>{t("keepMenuOpen")}</span>
+            </label>
+          </form>
           <section className={styles.history}>
-            <h3>{t('recentChanges')}</h3>
+            <h3>{t("recentChanges")}</h3>
             {recentEntries.length === 0 ? (
-              <p className={styles.emptyHistory}>{t('noScoreChanges')}</p>
+              <p className={styles.emptyHistory}>{t("noScoreChanges")}</p>
             ) : (
               <ul>
                 {recentEntries.map((entry) => (
                   <li key={entry.id}>
-                    <span className={entry.value > 0 ? styles.positiveEntry : styles.negativeEntry}>
+                    <span
+                      className={
+                        entry.value > 0
+                          ? styles.positiveEntry
+                          : styles.negativeEntry
+                      }
+                    >
                       {entry.value > 0 ? `+${entry.value}` : entry.value}
                     </span>
-                    <time>{formatEntryTime(entry.createdAt)}</time>
-                    <button type="button" onClick={() => sheet.removeScoreEntry(player.id, entry.id)}>
-                      {t('undo')}
+                    <time
+                      dateTime={new Date(entry.createdAt).toISOString()}
+                      title={exactTimeFormatter.format(entry.createdAt)}
+                    >
+                      {formatEntryTime(entry.createdAt, now)}
+                    </time>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        sheet.removeScoreEntry(player.id, entry.id)
+                      }
+                    >
+                      {t("undo")}
                     </button>
                   </li>
                 ))}

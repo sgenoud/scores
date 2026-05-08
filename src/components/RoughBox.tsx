@@ -1,6 +1,6 @@
-import { useEffect, useRef } from 'react';
-import rough from 'roughjs/bin/rough';
-import styles from './ScoreSheet.module.css';
+import { useEffect, useRef } from "react";
+import rough from "roughjs/bin/rough";
+import styles from "./ScoreSheet.module.css";
 
 export const RoughBox = ({ color, seed }: { color: string; seed: number }) => {
   const svgRef = useRef<SVGSVGElement>(null);
@@ -17,10 +17,17 @@ export const RoughBox = ({ color, seed }: { color: string; seed: number }) => {
       seed,
       stroke: color,
       strokeWidth: 2.2,
-      fill: 'transparent',
+      fill: "transparent",
     });
     svg.appendChild(rectangle);
   }, [color, seed]);
 
-  return <svg ref={svgRef} className={styles.roughBox} viewBox="0 0 100 100" preserveAspectRatio="none" />;
+  return (
+    <svg
+      ref={svgRef}
+      className={styles.roughBox}
+      viewBox="0 0 100 100"
+      preserveAspectRatio="none"
+    />
+  );
 };

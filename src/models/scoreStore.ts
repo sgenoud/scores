@@ -1,32 +1,32 @@
-import { Instance, SnapshotIn, cast, onSnapshot, types } from 'mobx-state-tree';
+import { Instance, SnapshotIn, cast, onSnapshot, types } from "mobx-state-tree";
 
-const STORAGE_KEY = 'board-game-scorekeeper-store-v1';
+const STORAGE_KEY = "board-game-scorekeeper-store-v1";
 
 const colorPalette = [
-  '#ef4444',
-  '#3b82f6',
-  '#22c55e',
-  '#a855f7',
-  '#f97316',
-  '#14b8a6',
-  '#ec4899',
-  '#eab308',
-  '#6366f1',
-  '#84cc16',
-  '#f43f5e',
-  '#06b6d4',
-  '#8b5cf6',
-  '#f59e0b',
-  '#10b981',
-  '#d946ef',
-  '#0ea5e9',
-  '#65a30d',
-  '#dc2626',
-  '#7c3aed',
+  "#ef4444",
+  "#3b82f6",
+  "#22c55e",
+  "#a855f7",
+  "#f97316",
+  "#14b8a6",
+  "#ec4899",
+  "#eab308",
+  "#6366f1",
+  "#84cc16",
+  "#f43f5e",
+  "#06b6d4",
+  "#8b5cf6",
+  "#f59e0b",
+  "#10b981",
+  "#d946ef",
+  "#0ea5e9",
+  "#65a30d",
+  "#dc2626",
+  "#7c3aed",
 ];
 
 const randomId = () =>
-  typeof crypto !== 'undefined' && 'randomUUID' in crypto
+  typeof crypto !== "undefined" && "randomUUID" in crypto
     ? crypto.randomUUID()
     : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
 
@@ -34,21 +34,21 @@ const normalizeNames = (names: string[]) =>
   names
     .map((name) => name.trim().toLocaleLowerCase())
     .filter(Boolean)
-    .join('|');
+    .join("|");
 
-const makeGroupTitle = (names: string[]) => names.join(' · ');
+const makeGroupTitle = (names: string[]) => names.join(" · ");
 
-export type ScoreEntrySource = 'manual' | 'quick';
+export type ScoreEntrySource = "manual" | "quick";
 
-export const ScoreEntryModel = types.model('ScoreEntry', {
+export const ScoreEntryModel = types.model("ScoreEntry", {
   id: types.identifier,
   value: types.number,
   createdAt: types.number,
-  source: types.optional(types.enumeration(['manual', 'quick']), 'manual'),
+  source: types.optional(types.enumeration(["manual", "quick"]), "manual"),
 });
 
 export const PlayerModel = types
-  .model('Player', {
+  .model("Player", {
     id: types.identifier,
     name: types.string,
     color: types.string,
@@ -60,14 +60,18 @@ export const PlayerModel = types
     },
     get initials() {
       const compactName = self.name.trim();
-      if (!compactName) return '?';
+      if (!compactName) return "?";
       const parts = compactName.split(/\s+/);
       if (parts.length === 1) return compactName.slice(0, 2).toUpperCase();
-      return `${parts[0][0] ?? ''}${parts[parts.length - 1][0] ?? ''}`.toUpperCase();
+      return `${parts[0][0] ?? ""}${parts[parts.length - 1][0] ?? ""}`.toUpperCase();
     },
   }))
   .actions((self) => ({
-    addValue(value: number, mergeWindowMs = 0, source: ScoreEntrySource = 'manual') {
+    addValue(
+      value: number,
+      mergeWindowMs = 0,
+      source: ScoreEntrySource = "manual",
+    ) {
       const safeValue = Math.trunc(value);
       if (!Number.isFinite(safeValue) || safeValue === 0) return;
 
@@ -103,13 +107,13 @@ export const PlayerModel = types
     },
   }));
 
-export const PlayerTemplateModel = types.model('PlayerTemplate', {
+export const PlayerTemplateModel = types.model("PlayerTemplate", {
   name: types.string,
   color: types.string,
 });
 
 export const SavedGroupModel = types
-  .model('SavedGroup', {
+  .model("SavedGroup", {
     id: types.identifier,
     name: types.string,
     players: types.array(PlayerTemplateModel),
@@ -129,12 +133,12 @@ export const SavedGroupModel = types
   }));
 
 export const ScoreSheetModel = types
-  .model('ScoreSheet', {
+  .model("ScoreSheet", {
     id: types.identifier,
     title: types.string,
     createdAt: types.number,
     updatedAt: types.number,
-    sortDirection: types.optional(types.enumeration(['desc', 'asc']), 'desc'),
+    sortDirection: types.optional(types.enumeration(["desc", "asc"]), "desc"),
     keepScoreDialogOpen: types.optional(types.boolean, false),
     players: types.array(PlayerModel),
   })
@@ -143,7 +147,7 @@ export const ScoreSheetModel = types
       self.updatedAt = Date.now();
     },
     toggleSortDirection() {
-      self.sortDirection = self.sortDirection === 'desc' ? 'asc' : 'desc';
+      self.sortDirection = self.sortDirection === "desc" ? "asc" : "desc";
       self.updatedAt = Date.now();
     },
     setKeepScoreDialogOpen(value: boolean) {
@@ -151,7 +155,7 @@ export const ScoreSheetModel = types
       self.updatedAt = Date.now();
     },
     sortPlayersByScore() {
-      const direction = self.sortDirection === 'desc' ? -1 : 1;
+      const direction = self.sortDirection === "desc" ? -1 : 1;
       const sortedPlayers = [...self.players].sort((a, b) => {
         const byScore = (a.score - b.score) * direction;
         if (byScore !== 0) return byScore;
@@ -161,7 +165,12 @@ export const ScoreSheetModel = types
       self.players.replace(sortedPlayers);
       self.updatedAt = Date.now();
     },
-    addScore(playerId: string, value: number, mergeWindowMs = 0, source: ScoreEntrySource = 'manual') {
+    addScore(
+      playerId: string,
+      value: number,
+      mergeWindowMs = 0,
+      source: ScoreEntrySource = "manual",
+    ) {
       const player = self.players.find((item) => item.id === playerId);
       if (!player) return;
       player.addValue(value, mergeWindowMs, source);
@@ -176,17 +185,21 @@ export const ScoreSheetModel = types
   }));
 
 export const RootStoreModel = types
-  .model('RootStore', {
+  .model("RootStore", {
     sheets: types.optional(types.array(ScoreSheetModel), []),
     savedGroups: types.optional(types.array(SavedGroupModel), []),
     currentSheetId: types.maybeNull(types.string),
   })
   .views((self) => ({
     get currentSheet() {
-      return self.sheets.find((sheet) => sheet.id === self.currentSheetId) ?? null;
+      return (
+        self.sheets.find((sheet) => sheet.id === self.currentSheetId) ?? null
+      );
     },
     get recentGroups() {
-      return [...self.savedGroups].sort((a, b) => b.lastPlayedAt - a.lastPlayedAt);
+      return [...self.savedGroups].sort(
+        (a, b) => b.lastPlayedAt - a.lastPlayedAt,
+      );
     },
   }))
   .actions((self) => {
@@ -209,14 +222,16 @@ export const RootStoreModel = types
       );
     };
 
-    const createSheetFromPlayers = (players: { name: string; color: string }[]) => {
+    const createSheetFromPlayers = (
+      players: { name: string; color: string }[],
+    ) => {
       const now = Date.now();
       const sheet = {
         id: randomId(),
-        title: '',
+        title: "",
         createdAt: now,
         updatedAt: now,
-        sortDirection: 'desc' as const,
+        sortDirection: "desc" as const,
         keepScoreDialogOpen: false,
         players: players.map((player) => ({
           id: randomId(),
@@ -234,7 +249,7 @@ export const RootStoreModel = types
     return {
       createSheet(names: string[]) {
         const trimmedNames = names.map((name) => name.trim()).filter(Boolean);
-        const finalNames = trimmedNames.length > 0 ? trimmedNames : ['A', 'B'];
+        const finalNames = trimmedNames.length > 0 ? trimmedNames : ["A", "B"];
         const players = finalNames.map((name, index) => ({
           name,
           color: colorPalette[index % colorPalette.length],
@@ -276,7 +291,7 @@ const defaultSnapshot: RootSnapshot = {
 };
 
 const readSnapshot = (): RootSnapshot => {
-  if (typeof window === 'undefined') return defaultSnapshot;
+  if (typeof window === "undefined") return defaultSnapshot;
 
   const rawSnapshot = window.localStorage.getItem(STORAGE_KEY);
   if (!rawSnapshot) return defaultSnapshot;
@@ -297,7 +312,7 @@ export const createScoreStore = () => {
     store = RootStoreModel.create(defaultSnapshot);
   }
 
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     onSnapshot(store, (snapshot) => {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot));
     });
