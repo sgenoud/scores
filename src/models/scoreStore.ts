@@ -295,6 +295,10 @@ export const RootStoreModel = types
           self.currentSheetId = sheetId;
         }
       },
+      removeGroup(groupId: string) {
+        const group = self.savedGroups.find((item) => item.id === groupId);
+        if (group) self.savedGroups.remove(group);
+      },
     };
   });
 

@@ -98,13 +98,27 @@
 .groupCard {
   position: relative;
   display: grid;
-  gap: 0.75rem;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: top;
+  gap: 0.5rem;
   width: 100%;
-  border: 0;
   padding: 1.35rem 0.15rem;
   color: #f9fafb;
   background: transparent;
   text-align: left;
+}
+
+.groupPlayArea {
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+  border: 0;
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
 }
 
 .groupCard:first-child {
@@ -162,9 +176,92 @@
   white-space: nowrap;
 }
 
-.groupHeader span {
-  color: #7c6f5b;
-  font-weight: 1000;
+.deleteButton {
+  display: flex;
+  width: 2.4rem;
+  height: 2.4rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 50%;
+  color: #9ca3af;
+  background: transparent;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+
+.deleteButton:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.confirmDialog {
+  display: grid;
+  gap: 0.75rem;
+  width: min(100%, 24rem);
+  padding: 1.25rem 1.25rem calc(1.25rem + var(--safe-bottom));
+  border-radius: 1.4rem;
+  background: #111827;
+  box-shadow: 0 2rem 6rem rgba(0, 0, 0, 0.34);
+  color: #e5e7eb;
+}
+
+.confirmDialog h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  letter-spacing: -0.04em;
+}
+
+.confirmDialog p {
+  margin: 0;
+  color: #9ca3af;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.confirmGroupPreview {
+  display: grid;
+  gap: 0.55rem;
+  padding: 0.75rem;
+  border-radius: 1rem;
+  background: #0f172a;
+}
+
+.confirmGroupPreview strong {
+  font-size: 1.05rem;
+  letter-spacing: -0.04em;
+}
+
+.confirmGroupPlayers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.42rem;
+}
+
+.confirmActions {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.35rem;
+}
+
+.confirmActions button {
+  flex: 1 1 0;
+  min-height: 2.65rem;
+  border: 0;
+  border-radius: 0.95rem;
+  padding: 0.55rem 0.9rem;
+  color: #e5e7eb;
+  background: #1f2937;
+  font-size: 0.92rem;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.confirmDeleteButton {
+  color: #fff !important;
+  background: #dc2626 !important;
 }
 
 .groupPlayers {

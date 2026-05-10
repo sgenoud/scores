@@ -17,7 +17,7 @@ const MESSAGES = {
     playersCount: "{count} joueur",
     playersCountPlural: "{count} joueurs",
     players: "Joueurs",
-    playersPlaceholder: "A\nB\nC\nD",
+    playersPlaceholder: "John\nPaul\nGeorge\nRingo",
     createScoreSheet: "Créer la feuille de scores",
     previousGroups: "Groupes précédents",
     allGroups: "Tous les groupes",
@@ -50,6 +50,11 @@ const MESSAGES = {
     language: "Langue",
     languageAuto: "Auto",
     closeSettings: "Fermer les paramètres",
+    deleteGroupConfirmTitle: "Supprimer ce groupe ?",
+    deleteGroupConfirmMessage:
+      "Les feuilles de scores existantes ne seront pas affectées.",
+    cancel: "Annuler",
+    confirmDelete: "Supprimer",
     undo: "Annuler",
   },
   en: {
@@ -66,7 +71,7 @@ const MESSAGES = {
     playersCount: "{count} player",
     playersCountPlural: "{count} players",
     players: "Players",
-    playersPlaceholder: "A\nB\nC\nD",
+    playersPlaceholder: "John\nPaul\nGeorge\nRingo",
     createScoreSheet: "Create score sheet",
     previousGroups: "Previous groups",
     allGroups: "All groups",
@@ -99,6 +104,11 @@ const MESSAGES = {
     language: "Language",
     languageAuto: "Auto",
     closeSettings: "Close settings",
+    deleteGroupConfirmTitle: "Delete this group?",
+    deleteGroupConfirmMessage:
+      "Existing score sheets will not be affected.",
+    cancel: "Cancel",
+    confirmDelete: "Delete",
     undo: "Undo",
   },
 } as const;
