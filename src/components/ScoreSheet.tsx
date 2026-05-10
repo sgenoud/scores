@@ -162,20 +162,37 @@ export const ScoreSheet = observer(
           </span>
           <div className={styles.sortControls}>
             <button
-              className={`${styles.sortButton} ${styles.sortIconButton}`}
+              className={styles.sortIconButton}
               type="button"
-              onClick={() => sheet.toggleSortDirection()}
+              data-stale={!sheet.isSortedByScore}
+              onClick={() => {
+                if (sheet.isSortedByScore) {
+                  sheet.toggleSortDirection();
+                }
+                sheet.sortPlayersByScore();
+              }}
               aria-label={sortLabel}
               title={sortLabel}
             >
-              {sheet.sortDirection === "desc" ? "▼" : "▲"}
-            </button>
-            <button
-              className={styles.sortButton}
-              type="button"
-              onClick={() => sheet.sortPlayersByScore()}
-            >
-              {t("sort")}
+              <svg
+                className={styles.sortIcon}
+                style={
+                  sheet.sortDirection === "desc"
+                    ? { transform: "scaleY(-1)" }
+                    : undefined
+                }
+                viewBox="0 0 3600 3600"
+                xmlns="http://www.w3.org/2000/svg"
+                width="1.35em"
+                height="1.35em"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path d="m3276.1 2812.5c56.109 0 109.83 22.219 149.48 61.875 39.652 39.656 61.875 93.375 61.875 149.48v245.95c0 55.969-22.219 109.83-61.875 149.48s-93.375 61.875-149.48 61.875h-1152.3c-56.109 0-109.83-22.219-149.48-61.875s-61.875-93.516-61.875-149.48v-245.95c0-56.109 22.219-109.83 61.875-149.48 39.656-39.652 93.375-61.875 149.48-61.875z" fill-rule="evenodd" />
+                <path d="m2938.6 1746.8c56.109 0 109.83 22.219 149.48 61.875s61.875 93.516 61.875 149.48v245.95c0 55.969-22.219 109.83-61.875 149.48s-93.375 61.875-149.48 61.875h-814.79c-56.109 0-109.83-22.219-149.48-61.875s-61.875-93.516-61.875-149.48v-245.95c0-55.969 22.219-109.83 61.875-149.48s93.375-61.875 149.48-61.875z" fill-rule="evenodd" />
+                <path d="m2601.1 681.34c116.72 0 211.36 94.641 211.36 211.36v245.95c0 116.72-94.641 211.36-211.36 211.36h-477.29c-116.72 0-211.36-94.641-211.36-211.36v-245.95c0-116.72 94.641-211.36 211.36-211.36z" fill-rule="evenodd" />
+                <path d="m501.77 1936.3c7.0312 0 12.797-5.7656 12.938-12.797v-1573c0-131.34 106.45-237.94 237.8-237.94h351.28c131.34 0 237.94 106.59 237.94 237.94v1573c0 7.0312 5.7656 12.797 12.938 12.797h151.17c85.781 0 164.81 46.125 207.14 120.66 42.188 74.531 41.062 166.22-3.0938 239.62l-577.69 962.86c-43.031 71.719-120.52 115.59-204.05 115.59s-161.02-43.875-203.91-115.59l-577.84-962.86c-44.156-73.406-45.281-165.09-2.9531-239.62 42.188-74.531 121.22-120.66 207-120.66z" fill-rule="evenodd" />
+              </svg>
             </button>
           </div>
         </div>

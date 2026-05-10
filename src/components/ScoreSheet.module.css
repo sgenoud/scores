@@ -31,8 +31,7 @@
 }
 
 .newButton,
-.wakeButton,
-.sortButton {
+.wakeButton {
   border: 0;
   border-radius: 999px;
   font-weight: 900;
@@ -97,24 +96,42 @@
 .sortControls {
   display: flex;
   align-items: center;
-  gap: 0.45rem;
-}
-
-.sortButton {
-  padding: 0.62rem 0.9rem;
-  color: #171923;
-  background: #fffaf1;
-  box-shadow: inset 0 0 0 1px rgba(23, 25, 35, 0.1);
+  gap: 0.85rem;
 }
 
 .sortIconButton {
-  display: grid;
-  width: 2.65rem;
-  min-width: 2.65rem;
-  padding-inline: 0;
-  place-items: center;
-  font-size: 1.25rem;
-  line-height: 1;
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+}
+
+.sortIconButton::after {
+  content: "";
+  position: absolute;
+  top: -0.1rem;
+  right: -0.1rem;
+  width: 0.42rem;
+  height: 0.42rem;
+  border-radius: 50%;
+  background: #f59e0b;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.sortIconButton[data-stale="true"]::after {
+  opacity: 1;
+}
+
+.sortIcon {
+  flex-shrink: 0;
+  color: #cbd5e1;
 }
 
 .playerList {

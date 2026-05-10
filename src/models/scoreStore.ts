@@ -142,6 +142,18 @@ export const ScoreSheetModel = types
     keepScoreDialogOpen: types.optional(types.boolean, false),
     players: types.array(PlayerModel),
   })
+  .views((self) => ({
+    get isSortedByScore() {
+      const direction = self.sortDirection === "desc" ? -1 : 1;
+      for (let i = 0; i < self.players.length - 1; i++) {
+        const a = self.players[i];
+        const b = self.players[i + 1];
+        const byScore = (a.score - b.score) * direction;
+        if (byScore > 0) return false;
+      }
+      return true;
+    },
+  }))
   .actions((self) => ({
     touch() {
       self.updatedAt = Date.now();
