@@ -6,6 +6,7 @@ import { seedFromText } from "../seed";
 import { RoughAvatar } from "./RoughAvatar";
 import { RoughSeparator } from "./RoughSeparator";
 import { SettingsDialog } from "./SettingsDialog";
+import { getRandomWhimsyPlaceholder } from "../whimsyGroups";
 import styles from "./NewSheet.module.css";
 
 const splitNames = (text: string) =>
@@ -140,6 +141,7 @@ const GroupCard = observer(
 
 export const NewSheet = observer(({ store }: { store: RootStoreInstance }) => {
   const [namesText, setNamesText] = useState("");
+  const [placeholder] = useState(() => getRandomWhimsyPlaceholder());
   const [showAllGroups, setShowAllGroups] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [groupToDelete, setGroupToDelete] =
@@ -240,7 +242,7 @@ export const NewSheet = observer(({ store }: { store: RootStoreInstance }) => {
             <textarea
               value={namesText}
               onChange={(event) => setNamesText(event.target.value)}
-              placeholder={t("playersPlaceholder")}
+              placeholder={placeholder}
               rows={6}
             />
           </label>
