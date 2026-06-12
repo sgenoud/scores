@@ -198,10 +198,7 @@ export const ScoreSheetModel = types
 
 export const SettingsModel = types
   .model("Settings", {
-    language: types.optional(
-      types.enumeration(["auto", "fr", "en"]),
-      "auto",
-    ),
+    language: types.optional(types.enumeration(["auto", "fr", "en"]), "auto"),
     wakeLockEnabled: types.optional(types.boolean, true),
   })
   .actions((self) => ({
@@ -282,12 +279,14 @@ export const RootStoreModel = types
     return {
       createSheet(names: string[]) {
         const trimmedNames = names.map((name) => name.trim()).filter(Boolean);
-        const finalNames = trimmedNames.length > 0 ? trimmedNames : ["A", "B"];
-        const players = finalNames.map((name, index) => ({
+        if (trimmedNames.length === 0) return false;
+
+        const players = trimmedNames.map((name, index) => ({
           name,
           color: colorPalette[index % colorPalette.length],
         }));
         createSheetFromPlayers(players);
+        return true;
       },
       createSheetFromGroup(groupId: string) {
         const group = self.savedGroups.find((item) => item.id === groupId);

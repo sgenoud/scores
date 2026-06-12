@@ -47,7 +47,7 @@ const localizedGroups: Record<string, string[][]> = {
     ["Roi", "Dame", "Tour", "Fou"],
     ["Voiture", "Chien", "Chapeau", "Bateau"],
     ["Bois", "Brique", "Mouton", "Blé"],
-    ["Écarlate", "Moutarde", "Blanche", "Vert", "Paon", "Prune"],
+    ["Mlle Rose", "Colonel Moutarde", "Mme Leblanc", "Révérend Olive", "Mme Pervenche", "Professeur Violet"],
     ["Chevalier", "Voleur", "Paysan", "Moine"],
     ["Médecin", "Scientifique", "Chercheur", "Dispatcheur"],
     ["Guerrier", "Mage", "Voleur", "Clerc"],
